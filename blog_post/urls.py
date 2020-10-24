@@ -13,6 +13,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/', include(router.urls)),
+    path('', include('core.urls')),
     # path(r'api/core/', include('core.api.urls'), namespace='api-core')
     # path('api/', BlogPostRudView.as_view(), name='post-rud')
 
