@@ -12,6 +12,54 @@ from .models import Article
 from .serializers import ArticleSerializer
 
 
+class GenericRAPIView(generics.GenericAPIView, mixins.ListModelMixin):
+    serializer_class = ArticleSerializer
+    queryset = Article.objects.all()
+
+    def get(self, request):
+        return self.list(request)
+
+
+class GenericCRAPIView(generics.GenericAPIView, mixins.CreateModelMixin, mixins.ListModelMixin):
+    serializer_class = ArticleSerializer
+    queryset = Article.objects.all()
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request):
+        return self.create(request)
+
+
+class GenericCRUDAPIView(
+    generics.GenericAPIView,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin
+):
+    serializer_class = ArticleSerializer
+    queryset = Article.objects.all()
+
+    lookup_field = 'id'
+
+    def get(self, request, id=None):
+        if id:
+            return self.retrieve(request)
+        else:
+            return self.list(request)
+
+    def post(self, request):
+        return self.create(request)
+
+    def put(self, request, id=None):
+        return self.update(request, id)
+
+    def delete(self, request, id):
+        return self.destroy(request, id)
+
+
 class ArticleAPIView(APIView):
 
     def get(self, request):
