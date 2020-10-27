@@ -12,10 +12,12 @@ from .views import (
     GenericCRAPIView,
     GenericCRUDAPIView,
     ArticleViewSet,
+    ArticleGenericViewSet,
 )
 
 router = DefaultRouter()
 router.register(r'article', ArticleViewSet, basename='article')
+router.register(r'article-generic', ArticleGenericViewSet, basename='article-generic')
 
 
 urlpatterns = [
