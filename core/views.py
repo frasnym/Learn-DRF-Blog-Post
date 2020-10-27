@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
-from rest_framework import viewsets, generics, mixins, status
+from rest_framework import viewsets, generics, mixins, status, viewsets
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -12,6 +13,41 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Article
 from .serializers import ArticleSerializer
+
+
+class ArticleViewSet(viewsets.ViewSet):
+
+    def list(self, request):
+        articles = Article.objects.all()
+        serializer = ArticleSerializer(articles, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = ArticleSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        queryset = Article.objects.all()
+        article = get_object_or_404(queryset, pk=pk)
+        serializer = ArticleSerializer(article)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        article = Article.objects.get(pk=pk)
+        serializer = ArticleSerializer(article, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def partial_update(self, request, pk=None):
+    #     pass
+
+    # def destroy(self, request, pk=None):
+    #     pass
 
 
 class GenericRAPIView(generics.GenericAPIView, mixins.ListModelMixin):
@@ -198,6 +234,6 @@ def article_detail_function_based(request, pk):
         return HttpResponse(status=204)
 
 
-class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Article.objects.all()
-    serializer_class = ArticleSerializer
+# class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer

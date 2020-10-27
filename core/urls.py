@@ -1,4 +1,5 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from .views import (
     article_list_function_based,
@@ -10,7 +11,11 @@ from .views import (
     GenericRAPIView,
     GenericCRAPIView,
     GenericCRUDAPIView,
+    ArticleViewSet,
 )
+
+router = DefaultRouter()
+router.register(r'article', ArticleViewSet, basename='article')
 
 
 urlpatterns = [
@@ -31,4 +36,8 @@ urlpatterns = [
     path('generic-mixin-article-list/', GenericRAPIView.as_view()),
     path('generic-mixin-article-CR/', GenericCRAPIView.as_view()),
     path('generic-mixin-article-CRUD/<int:id>/', GenericCRUDAPIView.as_view()),
+
+    # ViewSet
+    path('viewset/', include(router.urls)),
+    # path('viewset/<int:pk>/', include(router.urls)), # ! This is not needed
 ]
