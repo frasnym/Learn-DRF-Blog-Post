@@ -14,6 +14,10 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Article
 from .serializers import ArticleSerializer
 
+class ArticleModelViewSet(viewsets.ModelViewSet):
+    serializer_class = ArticleSerializer
+    queryset = Article.objects.all()
+
 
 class ArticleGenericViewSet(
     viewsets.GenericViewSet,
